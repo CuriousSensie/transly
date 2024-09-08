@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from "./components/authentication/login/Login";
 import Register from "./components/authentication/register/Register";
 import Header from "./components/header/Header";
-import Home from "./components/home/Home";
 import { AuthProvider } from "./contexts/authcontext";
+import Home from './components/home/Home';
 
 function App() {
   return (
