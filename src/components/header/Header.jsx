@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authcontext';
 import { doSignOut } from '../../firebase/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faRightFromBracket, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -33,6 +33,10 @@ const Header = () => {
                     <span className='text-blue-400 bold'>Y</span>
                 </Link>
             </h1>
+            <button className="special-btn flex items-center text-blue-700 rounded gap-2 px-4 py-2 ">
+            <FontAwesomeIcon icon={faPlus} />
+            Add
+          </button>
             
             {/* Navigation Links */}
             <div className="flex items-center gap-x-4">

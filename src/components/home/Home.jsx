@@ -6,18 +6,14 @@ import {
   faMicrophone,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Home = () => {
+const Home = (props) => {
+  const { file, setFile } = props;
+
   return (
     <div>
-      <main className="w-full h-screen">
-        <section className="mt-16 flex self-center justify-self-center place-content-center">
-          <button className="special-btn flex items-center text-blue-400 rounded gap-2 px-4 py-2 ">
-            <FontAwesomeIcon icon={faPlus} />
-            Add
-          </button>
-        </section>
-        <section className="flex flex-col mt-4 self-center h-full place-content-center place-items-center ">
-          <h1 className="pb-6 font-bold text-5xl sm:text-6xl md::text-7xl">
+      <main className="w-full h-screen mt-12">
+        <section className="flex-1 p-4 flex h-screen flex-col gap-3 text-center sm:gap-4 md:gap-5 justify-center pb-12 w-fit mx-auto max-w-full place-items-center place-content-center">
+          <h1 className="font-bold text-5xl sm:text-6xl md::text-7xl">
             <span className="text-blue-950 bold">T</span>
             <span className="text-blue-900 bold">R</span>
             <span className="text-blue-800 bold">A</span>
@@ -38,12 +34,23 @@ const Home = () => {
             <FontAwesomeIcon icon={faMicrophone} />
           </button>
           <p className="text-base">
-            or { }
-            < label className="text-blue-700 cursor-pointer hover:text-blue-600 duration-200"> 
+            or {}
+            <label className="text-blue-700 cursor-pointer hover:text-blue-600 duration-200">
               upload
-              <input type="file" className="hidden"  accept=".mp3, .wave"/>
+              <input
+                onChange={(e) => {
+                  const tempFile = e.target.files[0];
+                  // console.log(tempFile);
+                  // console.log(file);
+                  setFile(tempFile);
+                  // console.log(file);
+                }}
+                type="file"
+                className="hidden"
+                accept=".mp3, .wave"
+              />
             </label>
-            { } an mp3 file
+            {} an mp3 file
           </p>
         </section>
       </main>
