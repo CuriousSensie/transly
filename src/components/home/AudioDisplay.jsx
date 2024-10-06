@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenNib, faPen } from "@fortawesome/free-solid-svg-icons";
 
 export default function AudioDisplay(props) {
-  const { file } = props;
+  const [recordingStatus, setRecordingStatus] = useState("inactive");
+  const [audioChunks, setAudioChunks] = useState([]);
+  const [duration, setDuration] = useState(0);
+
+  const mediaRecorder = useRef(null);
+  
+  const { file, recording, setFile, setRecording} = props;
   return (
     <div>
       <main className="h-screen w-screen mt-12">
@@ -18,11 +25,11 @@ export default function AudioDisplay(props) {
           </h1>
           <div className="flex flex-col mx-auto text-center">
             <h3 className="font-semibold">Name:</h3>
-            <p className="">{file.name}</p>
-            {console.log(file.name)}
+            <p className="">{file ? file?.name : "Recorded Audio"}</p>
+            {file ? console.log(file.name) : console.log(recording)}
           </div>
           <div className="w-5/6 flex flex-row items-center justify-between gap-4">
-            <button className="text-slate-600">Reset</button>
+            <button onClick={() => {file ? setFile(null) : setRecording(null)}} className="text-slate-600">Reset</button>
             <button className="flex flex-row gap-2 items-center special-btn py-2 rounded-lg px-4 text-blue-700">
               <FontAwesomeIcon icon={faPenNib} />
               <p>Transcribe</p>

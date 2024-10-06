@@ -4,10 +4,58 @@ import { useAuth } from '../../contexts/authcontext';
 import { doSignOut } from '../../firebase/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket, faPlus} from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
 
-const Header = () => {
+const Header = (props) => {
+    const {setFile, setRecording, setOutput, setLoading} = props
     const navigate = useNavigate();
     const { userLoggedIn } = useAuth();
+
+    const handleNew = () => {
+        Swal.fire({
+            title: "Start with a new Audio?",
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Confirm",
+            denyButtonText: `Cancel`
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                console.log("Resetting the conditionals");
+
+                setFile(null);
+                setOutput(null);
+                setRecording(null);
+                setLoading(false);
+
+            } else if (result.isDismissed) {
+                // do nothing
+            }
+          });
+    }
+
+    const handleSignOutAction = () => {
+        Swal.fire({
+            title: "Logout?",
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Confirm",
+            denyButtonText: `Cancel`
+          }).then((result) => {
+            if (result.isConfirmed) {
+                console.log("Logging Out");
+
+                setFile(null);
+                setOutput(null);
+                setRecording(null);
+                setLoading(false);
+
+                handleSignOut();
+            } else if (result.isDismissed) {
+                // do nothing
+            }
+        });
+    }
 
     const handleSignOut = async () => {
         try {
@@ -15,15 +63,21 @@ const Header = () => {
             navigate('/login');
         } catch (error) {
             console.error('Sign out error:', error);
-            // Optionally, you could show an error message to the user here
+            
         }
     };
 
     return (
         <nav className="flex flex-row gap-x-4 w-full z-20 fixed top-0 left-0 h-12 border-b bg-gray-200 items-center px-4 shadow-md">
             {/* Logo and App Name (Optional) */}
-            <h1 className="flex-grow">
-                <Link to="/" className="text-lg font-bold">
+            <h1 className="flex-grow hover:cursor-pointer">
+                <p onClick={() => {
+                    setFile(null);
+                    setOutput(null);
+                    setRecording(null);
+                    setLoading(false);
+                    
+                }} className="text-lg font-bold">
                     <span className='text-blue-950 bold'>T</span>
                     <span className='text-blue-900 bold'>R</span>
                     <span className='text-blue-800 bold'>A</span>
@@ -31,18 +85,18 @@ const Header = () => {
                     <span className='text-blue-600 bold'>S</span>
                     <span className='text-blue-500 bold'>L</span>
                     <span className='text-blue-400 bold'>Y</span>
-                </Link>
+                </p>
             </h1>
-            <button className="special-btn flex items-center text-blue-700 rounded gap-2 px-4 py-2 ">
+            <button onClick={handleNew} className="special-btn flex items-center text-blue-700 rounded gap-2 px-4 py-2 ">
             <FontAwesomeIcon icon={faPlus} />
-            Add
+            
           </button>
             
             {/* Navigation Links */}
             <div className="flex items-center gap-x-4">
                 {userLoggedIn ? (
                     <button 
-                        onClick={handleSignOut} 
+                        onClick={handleSignOutAction} 
                         className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-2"
                     >
                         <FontAwesomeIcon icon={faRightFromBracket} />
