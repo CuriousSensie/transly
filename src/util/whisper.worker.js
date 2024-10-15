@@ -25,6 +25,7 @@ self.addEventListener('message', async (event) => {
 })
 
 async function transcribe(audio) {
+    console.log("Transcribe function")
     sendLoadingMessage('loading')
 
     let pipeline
