@@ -10,7 +10,7 @@ export default function AudioDisplay(props) {
 
   const mediaRecorder = useRef(null);
   
-  const { file, recording, setFile, setRecording} = props;
+  const { file, recording, setFile, setRecording, handleFormSubmission} = props;
   return (
     <div>
       <main className="h-screen w-screen mt-12">
@@ -30,7 +30,7 @@ export default function AudioDisplay(props) {
           </div>
           <div className="w-5/6 flex flex-row items-center justify-between gap-4">
             <button onClick={() => {file ? setFile(null) : setRecording(null)}} className="text-slate-600">Reset</button>
-            <button className="flex flex-row gap-2 items-center special-btn py-2 rounded-lg px-4 text-blue-700">
+            <button onClick={handleFormSubmission} className="flex flex-row gap-2 items-center special-btn py-2 rounded-lg px-4 text-blue-700">
               <FontAwesomeIcon icon={faPenNib} />
               <p>Transcribe</p>
             </button>

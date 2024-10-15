@@ -7,7 +7,7 @@ import { faRightFromBracket, faPlus} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
 const Header = (props) => {
-    const {setFile, setRecording, setOutput, setLoading} = props
+    const {handleAudioReset} = props
     const navigate = useNavigate();
     const { userLoggedIn } = useAuth();
 
@@ -23,10 +23,7 @@ const Header = (props) => {
             if (result.isConfirmed) {
                 console.log("Resetting the conditionals");
 
-                setFile(null);
-                setOutput(null);
-                setRecording(null);
-                setLoading(false);
+                handleAudioReset();
 
             } else if (result.isDismissed) {
                 // do nothing
@@ -45,10 +42,7 @@ const Header = (props) => {
             if (result.isConfirmed) {
                 console.log("Logging Out");
 
-                setFile(null);
-                setOutput(null);
-                setRecording(null);
-                setLoading(false);
+                handleAudioReset();
 
                 handleSignOut();
             } else if (result.isDismissed) {
@@ -72,11 +66,7 @@ const Header = (props) => {
             {/* Logo and App Name (Optional) */}
             <h1 className="flex-grow hover:cursor-pointer">
                 <p onClick={() => {
-                    setFile(null);
-                    setOutput(null);
-                    setRecording(null);
-                    setLoading(false);
-                    
+                    handleAudioReset()
                 }} className="text-lg font-bold">
                     <span className='text-blue-950 bold'>T</span>
                     <span className='text-blue-900 bold'>R</span>
