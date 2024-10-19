@@ -1,15 +1,17 @@
-import { pipeline, env } from '@xenova/transformers'
-env.allowLocalModels = false;
 import { MessageTypes } from './presets'
+import { pipeline } from '@xenova/transformers'
+import { env } from '@xenova/transformers'
+env.allowLocalModels = false;
+
 
 class MyTranscriptionPipeline {
     static task = 'automatic-speech-recognition'
-    static model = 'openai/whisper-tiny.en'
+    static model = 'Xenova/whisper-tiny.en'
     static instance = null
 
     static async getInstance(progress_callback = null) {
         if (this.instance === null) {
-            this.instance = await pipeline(this.task, null, { progress_callback })
+            this.instance = await pipeline(this.task, this.model, { progress_callback })
         }
 
         return this.instance
@@ -17,51 +19,38 @@ class MyTranscriptionPipeline {
 }
 
 self.addEventListener('message', async (event) => {
-    const { type, audioBuffer} = event.data
-    console.log(audioBuffer);
+    const { type, audioBuffer } = event.data
     if (type === MessageTypes.INFERENCE_REQUEST) {
         await transcribe(audioBuffer)
     }
 })
 
-async function transcribe(audio) {
-    console.log("Transcribe function")
+async function transcribe(audioBuffer) {
     sendLoadingMessage('loading')
 
     let pipeline
 
     try {
         pipeline = await MyTranscriptionPipeline.getInstance(load_model_callback)
-        console.log(pipeline)
     } catch (err) {
         console.log(err.message)
-        console.log(pipeline)
     }
 
     sendLoadingMessage('success')
-    console.log("success Message sent")
 
     const stride_length_s = 5
 
     const generationTracker = new GenerationTracker(pipeline, stride_length_s)
-    console.log("generation tracker created")
-
-    try {
-        await pipeline(audio, {
-            top_k: 0,
-            do_sample: false,
-            chunk_length: 30,
-            stride_length_s,
-            return_timestamps: true,
-            callback_function: generationTracker.callbackFunction.bind(generationTracker),
-            chunk_callback: generationTracker.chunkCallback.bind(generationTracker)
-        });
-    } catch (error) {
-        console.error('Error during audio processing:', error);
-    }
-    
+    await pipeline(audioBuffer, {
+        top_k: 0,
+        do_sample: false,
+        chunk_length: 30,
+        stride_length_s,
+        return_timestamps: true,
+        callback_function: generationTracker.callbackFunction.bind(generationTracker),
+        chunk_callback: generationTracker.chunkCallback.bind(generationTracker)
+    })
     generationTracker.sendFinalResult()
-    console.log("Final result sent")
 }
 
 async function load_model_callback(data) {
@@ -100,12 +89,10 @@ class GenerationTracker {
     }
 
     sendFinalResult() {
-        console.log("Final result message posted");
         self.postMessage({ type: MessageTypes.INFERENCE_DONE })
     }
 
     callbackFunction(beams) {
-        console.log("Callback called with beams", beams);
         this.callbackFunctionCounter += 1
         if (this.callbackFunctionCounter % 10 !== 0) {
             return
@@ -126,7 +113,6 @@ class GenerationTracker {
     }
 
     chunkCallback(data) {
-        console.log("Chunk Callback called with data", data);
         this.chunks.push(data)
         const [text, { chunks }] = this.pipeline.tokenizer._decode_asr(
             this.chunks,
@@ -136,7 +122,6 @@ class GenerationTracker {
                 force_full_sequence: false
             }
         )
-        console.log("Decoded chunks", chunks);
 
         this.processed_chunks = chunks.map((chunk, index) => {
             return this.processChunk(chunk, index)
@@ -183,3 +168,4 @@ function createPartialResultMessage(result) {
         result
     })
 }
+

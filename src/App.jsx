@@ -9,7 +9,7 @@ import AudioDisplay from "./components/home/AudioDisplay";
 import Information from "./components/information/Information";
 import Transcribing from "./components/transcribing/Transcribing";
 import { reauthenticateWithCredential } from "firebase/auth";
-import { MessageTypes } from "./util/presets";
+import { MessageTypes } from "./utils/presets";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -33,7 +33,7 @@ function App() {
 
   useEffect(() => {
     if (!worker.current) {
-      worker.current = new Worker(new URL('./util/whisper.worker.js', import.meta.url), {
+      worker.current = new Worker(new URL('./utils/whisper.worker.js', import.meta.url), {
         type: 'module'
       })
     }
@@ -50,7 +50,7 @@ function App() {
           break;
         case 'RESULT':
           setOutput(e.data.results)
-          console.log("Results received in App", e.data.results)
+          console.log("Result:", e.data.results)
           break;
         case 'INFERENCE_DONE':
           setFinished(true)
@@ -64,34 +64,28 @@ function App() {
     return () => worker.current.removeEventListener('message', onMessageReceived)
   })
 
-
   async function readAudioFrom(file) {
-    const sampling_rate = 16000;
-    const audioContext = new AudioContext({ sampleRate: sampling_rate });
-
-    const response = await file.arrayBuffer();
-    const decoded = await audioContext.decodeAudioData(response);
-
-    const audioBuffer = decoded.getChannelData(0);
-    return audioBuffer;
+    const sampling_rate = 16000
+    const audioCTX = new AudioContext({ sampleRate: sampling_rate })
+    const response = await file.arrayBuffer()
+    const decoded = await audioCTX.decodeAudioData(response)
+    const audio = decoded.getChannelData(0)
+    return audio
   }
 
   async function handleFormSubmission() {
-    console.log("handleFormSubmission function");
-    if (!audio) {
-      return
-    }
+    if (!file && !recording) { return }
 
-    let audioBuffer = await readAudioFrom(file ? file : recording);
-
+    let audioBuffer = await readAudioFrom(file ? file : recording)
     const model_name = `openai/whisper-tiny.en`
+
     worker.current.postMessage({
       type: MessageTypes.INFERENCE_REQUEST,
       audioBuffer,
       model_name
     })
-
   }
+  
   return (
     <AuthProvider>
       <Router>
