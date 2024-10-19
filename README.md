@@ -1,8 +1,15 @@
-# React + Vite
+# Transly
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+  This is a simple transcription and translation service using ML
+  Transly has been implemented using:
+    React 
+    TailwindCSS
+    Vite
+    Swal
+    FontAwesome
+    Firebase authentication
+    Xenova/Transformers to run the Machine Learning Models
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Further implementation:
+  Since I have setup the Login/signup part, I also want to store the text everytime the service is used so the user can revisit and reuse. 
+  The Xenova/Transformer library is slow (not actually slow, but since it has a glitch where for me, I can only use the remote models, which means the user has to load the ML models from a remote server everytime. Which is slow. Whenever Xenova fixes this, I will implement the fix.
