@@ -1,7 +1,7 @@
 # Transly
 
   This is a simple transcription and translation service using ML <br>
-  Check the app: translyml.netlify.app
+  Check the app: <a href="https://translyml.netlify.app/"> click here <a/>
   <br> <br>
   Transly has been implemented using: <br>
     React <br>
